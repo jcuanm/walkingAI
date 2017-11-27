@@ -1,7 +1,7 @@
-import gym
+import gym 
 NUM_EPISODES = 1000
 TIME_STEPS = 1000
-env = gym.make('Walker2d-v1')
+env = gym.make('InvertedPendulum-v1')
 
 def main():
     for _ in range(NUM_EPISODES):
