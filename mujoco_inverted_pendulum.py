@@ -69,7 +69,7 @@ def main():
             state_0 = state
 
             if done:
-                print("Episode %d took %f time steps" % (episode, t))
+                print("Episode %d took %d time steps" % (episode, t))
                 times.append(int(t))
                 break
 
