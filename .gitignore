@@ -1,3 +1,4 @@
 /gym
 /mujoco-py
 .python-version
+.idea/
