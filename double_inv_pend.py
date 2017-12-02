@@ -14,12 +14,12 @@ NUM_EPISODES = 1500
 TIME_STEPS = 1000
 
 ## Learning related constants
-MIN_EXPLORE_RATE = 0.1
-MIN_LEARNING_RATE = 0.1
+MIN_EXPLORE_RATE = 1
+MIN_LEARNING_RATE = 0.5
 DEBUG_MODE = False
 
 def main():
-    env, action_dim, observation_dim = init('InvertedDoublePendulum-v1')
+    env, _, _ = init('InvertedDoublePendulum-v1')
 
     # Number of discrete states (bucket) per state dimension
     NUM_BUCKETS = (1, 10, 10, 10, 10, 1, 10, 10, 1, 1, 1) # x, sin, sin, cos, cos, v, w, w, , ,
