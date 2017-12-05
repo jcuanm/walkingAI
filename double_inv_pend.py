@@ -10,7 +10,7 @@ def init(name):
     observation_dim = env.observation_space.shape[0]
     return env, action_dim, observation_dim
 
-NUM_EPISODES = 1500
+NUM_EPISODES = 1000
 TIME_STEPS = 1000
 
 ## Learning related constants
@@ -95,6 +95,9 @@ def main():
         explore_rate = get_explore_rate(episode)
         learning_rate = get_learning_rate(episode)
     plt.plot(times)
+    plt.title('Double Inverted Pendulum Episode Length Over Time')
+    plt.xlabel('Episode Number')
+    plt.ylabel('Timesteps')
     plt.show()
 
 def select_action(env, state, explore_rate, q_table):

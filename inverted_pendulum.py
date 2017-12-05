@@ -81,7 +81,7 @@ def train(num_episodes, bounds, num_states, q_values):
                 streaks += 1
                 break
 
-        exploration = max(.01, min(1, 1.0 - math.log10((i+1)/25)))
+        exploration = max(.01, min(1, 1.0 - math.log10((t+1)/25)))
         alpha = max(.5, min(0.5, 1.0 - math.log10((t+1)/25))) # received this formula from a TF at office hours
 
         # Stop if we've succeesed 100 straight times 

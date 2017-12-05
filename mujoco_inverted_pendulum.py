@@ -79,6 +79,9 @@ def main():
 
     # plot distribution of episode times
     plt.plot(times)
+    plt.title('Single Inverted Pendulum Episode Length Over Time')
+    plt.xlabel('Episode Number')
+    plt.ylabel('Timesteps')
     plt.show()
 
 def select_action(env, state, explore_rate, q_table):
