@@ -57,7 +57,7 @@ def main():
 
             # Execute the action
             obv, reward, done, _ = env.step((action - 3)*0.1)
-
+            
             # Observe the result
             state = state_to_bucket(obv, STATE_BOUNDS, NUM_BUCKETS)
 

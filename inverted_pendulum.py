@@ -1,6 +1,7 @@
 import numpy as np
 import math
 from random import random
+from matplotlib import pyplot as plt
 import gym
 
 env = gym.make('CartPole-v1')
@@ -52,13 +53,14 @@ def train(num_episodes, bounds, num_states, q_values):
     exploration = 1
     gamma = 0.99  # the world is changing very little if at all
     time_steps = 250
+    times = []
 
     for i in range(num_episodes):
         observation = env.reset()
         initial_state = get_state(observation, bounds, num_states)
 
         for t in range(time_steps):
-            env.render()
+            #env.render()
             action = get_action(initial_state, exploration, q_values)
             observation, reward, done, info = env.step(action)
             state = get_state(observation, bounds, num_states)
@@ -70,24 +72,25 @@ def train(num_episodes, bounds, num_states, q_values):
             print_info(i,t,streaks,exploration,alpha)
 
             if done:
-               # We consider an episode solved if it went 200 steps without falling
-               if (t < 200):
-                   streaks = 0
-               else:
-                   streaks += 1
-               break
+                times.append(t)
+
+                # We consider an episode solved if it went 200 steps without falling
+                if (t < 200):
+                    streaks = 0
+                else:
+                    streaks += 1
+                break
 
             elif t == 200:
+                times.append(t)
                 streaks += 1
                 break
 
         exploration = max(.01, min(1, 1.0 - math.log10((t+1)/25)))
         alpha = max(.5, min(0.5, 1.0 - math.log10((t+1)/25))) # received this formula from a TF at office hours
 
-        # Stop if we've succeesed 100 straight times 
-        if streaks > 100:
-            break
-
+    plt.plot(times)
+    plt.show()
 def main():
     num_position_states = 1
     num_velocity_states = 1
@@ -98,7 +101,7 @@ def main():
     bounds[1] = (-1, 1) # Setting the bounds for the cart
     bounds[3] = (-math.radians(50), math.radians(50)) # Setting the bounds for theta
     q_values = np.zeros((num_position_states, num_velocity_states, num_angle_states, num_angular_velocity_states,2)) # There are 2 discrete moves: left and right
-    train(999, bounds, num_states, q_values)
+    train(500, bounds, num_states, q_values)
 
 if __name__ == "__main__":
     main()

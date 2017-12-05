@@ -10,16 +10,17 @@ def init(name):
     observation_dim = env.observation_space.shape[0]
     return env, action_dim, observation_dim
 
+
 NUM_EPISODES = 1000
 TIME_STEPS = 1000
 
 ## Learning related constants
-MIN_EXPLORE_RATE = 0.1
+MIN_EXPLORE_RATE = .1
 MIN_LEARNING_RATE = 0.1
 DEBUG_MODE = False
 
 def main():
-    env, action_dim, observation_dim = init('InvertedDoublePendulum-v1')
+    env, _, _ = init('InvertedDoublePendulum-v1')
 
     # Number of discrete states (bucket) per state dimension
     NUM_BUCKETS = (1, 10, 10, 10, 10, 1, 10, 10, 1, 1, 1) # x, sin, sin, cos, cos, v, w, w, , ,
@@ -31,7 +32,6 @@ def main():
     STATE_BOUNDS[4] = 0.3, 1
     STATE_BOUNDS[6] = -5, 5
     STATE_BOUNDS[7] = -10, 10
-
     ## Creating a Q-Table for each state-action pair
     q_table = np.zeros(NUM_BUCKETS + (21,))
 
