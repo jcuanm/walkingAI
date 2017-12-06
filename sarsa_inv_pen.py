@@ -105,7 +105,7 @@ def train(num_episodes, bounds, num_states, q_values):
     plt.title("Inverted pendulum time steps per episode")
     plt.xlabel('Episode')
     plt.ylabel('Time (t)')
-    plt.plot(times, 'r')
+    plt.plot(times, 'g')
     plt.show()
 
 def main():
