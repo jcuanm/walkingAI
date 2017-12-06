@@ -71,19 +71,19 @@ def train(num_episodes, bounds, num_states, q_values):
     for i in range(num_episodes):
         observation = env.reset()
         initial_state = get_state(observation, bounds, num_states)
-        
+        action = get_action(initial_state, exploration, q_values)
+
         for t in range(time_steps):
             #env.render()
-            action = get_action(initial_state, exploration, q_values)
             observation, reward, done, info = env.step(action)
             reward = get_reward(reward, observation,0)
             state = get_state(observation, bounds, num_states)
-            max_Qvalue = np.amax(q_values[state])
-            q_prime = initial_state + (action,)
+            action_prime = get_action(state,exploration,q_values)
             
-            # Q-learning update
-            q_values[initial_state + (action,)] += alpha*(reward + (gamma * max_Qvalue) - q_values[q_prime])
+            # SARSA update
+            q_values[initial_state + (action,)] += alpha*(reward + (gamma * q_values[state + (action_prime,)]) - q_values[initial_state + (action,)])
             initial_state = state
+            action = action_prime
             print_info(i,t,streaks,exploration,alpha)
 
             if done:
