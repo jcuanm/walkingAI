@@ -96,10 +96,10 @@ def select_action(env, state, explore_rate, q_table):
     return action
 
 def get_explore_rate(t):
-    return max(MIN_EXPLORATION, min(1.0, 1.0 - math.log10((t+1)/15)))
+    return max(MIN_EXPLORATION, min(1.0, 1.0 - math.log10((t+1)/12)))
 
 def get_learning_rate(t):
-    return max(MIN_LEARNING, min(0.5, 1.0 - math.log10((t+1)/15)))
+    return max(MIN_LEARNING, min(0.5, 1.0 - math.log10((t+1)/12)))
 
 def state_to_bucket(state, STATE_BOUNDS, NUM_BUCKETS):
     bucket_indice = []
