@@ -22,7 +22,7 @@ def main():
     env, _, _ = init('Walker2d-v1')
 
     # Number of discrete states (bucket) per state dimension
-    NUM_BUCKETS = (1, 10, 10, 10, 10, 1, 10, 10, 1, 1, 1) # x, sin, sin, cos, cos, v, w, w, , ,
+    NUM_BUCKETS = (1, 10, 10, 10, 10, 1, 10, 10, 1, 1, 1,1,1,1,1,1,1) # x, sin, sin, cos, cos, v, w, w, , ,
     # Bounds for each discrete state
     STATE_BOUNDS = list(zip(env.observation_space.low, env.observation_space.high))
     STATE_BOUNDS = [(-1, 1) for _ in STATE_BOUNDS]
@@ -53,7 +53,7 @@ def main():
 
         for t in range(TIME_STEPS):
             #if episode > 200:
-            #env.render()
+            env.render()
             # Select an action
             action = select_action(env, state_0, explore_rate, q_table)
 
@@ -99,7 +99,7 @@ def main():
 def select_action(env, state, explore_rate, q_table):
     # Select a random action
     if random.random() < explore_rate:
-        action = int((env.action_space.sample() - env.action_space.low)*3)
+        action = 0#int((env.action_space.sample() - env.action_space.low)*3)
     # Select the action with the highest q
     else:
         action = np.argmax(q_table[state])

@@ -23,7 +23,7 @@ def main():
     env, _, _ = init('InvertedDoublePendulum-v1')
 
     # Number of discrete states (bucket) per state dimension
-    NUM_BUCKETS = (1, 10, 10, 10, 10, 1, 10, 10, 1, 1, 1) # x, sin, sin, cos, cos, v, w, w, , ,
+    NUM_BUCKETS = (1, 40, 40, 40, 40, 1, 40, 40, 1, 1, 1) # x, sin, sin, cos, cos, v, w, w, , ,
     # Bounds for each discrete state
     STATE_BOUNDS = list(zip(env.observation_space.low, env.observation_space.high))
     STATE_BOUNDS = [(-1, 1) for _ in STATE_BOUNDS]
@@ -54,12 +54,12 @@ def main():
 
         for t in range(TIME_STEPS):
             #if episode > 200:
-            #env.render()
+            env.render()
             # Select an action
             action = select_action(env, state_0, explore_rate, q_table)
 
             # Execute the action
-            obv, reward, done, _ = env.step((action/3 + env.action_space.low)*0.5)
+            obv, reward, done, _ = env.step((action/3 + env.action_space.low)*0.1)
 
             # Observe the result
             state = state_to_bucket(obv, STATE_BOUNDS, NUM_BUCKETS)
@@ -113,7 +113,7 @@ def get_explore_rate(t):
     return max(MIN_EXPLORE_RATE, min(1.0, 1.0 - 20*math.log10((t+1)/200)))
 
 def get_learning_rate(t):
-    return max(MIN_LEARNING_RATE, min(0.8, 1.0 - 0.5*math.log10((t+1)/4000)))
+    return max(MIN_LEARNING_RATE, min(0.8, 1.0 - 0.5*math.log10((t+1)/400)))
 
 def state_to_bucket(state, STATE_BOUNDS, NUM_BUCKETS):
     bucket_indice = []

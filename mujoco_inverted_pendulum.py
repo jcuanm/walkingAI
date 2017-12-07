@@ -11,11 +11,11 @@ def init(name):
     return env, action_dim, observation_dim
 
 NUM_EPISODES = 500
-TIME_STEPS = 1000
+TIME_STEPS = 500
 
 ## Learning related constants
-MIN_EXPLORATION = 1e-8
-MIN_LEARNING = 0.001
+MIN_EXPLORATION = 1e-10
+MIN_LEARNING = 1e-6
 DEBUG_MODE = False
 
 def main():
@@ -49,8 +49,8 @@ def main():
         state_0 = state_to_bucket(obv, STATE_BOUNDS, NUM_BUCKETS)
 
         for t in range(TIME_STEPS):
-            if episode > 498:
-                env.render()
+            #if episode > 499:
+            #    env.render()
 
             # Select an action
             action = select_action(env, state_0, explore_rate, q_table)
@@ -72,6 +72,8 @@ def main():
                 print("Episode %d took %d time steps" % (episode, t))
                 times.append(int(t))
                 break
+        if len(times) < episode:
+            times.append(TIME_STEPS)
 
         # Update parameters
         explore_rate = get_explore_rate(episode)
@@ -94,10 +96,10 @@ def select_action(env, state, explore_rate, q_table):
     return action
 
 def get_explore_rate(t):
-    return max(MIN_EXPLORATION, min(1.0, 1.0 - math.log10((t+1)/25)))
+    return max(MIN_EXPLORATION, min(1.0, 1.0 - math.log10((t+1)/15)))
 
 def get_learning_rate(t):
-    return max(MIN_LEARNING, min(0.3, 1.0 - math.log10((t+1)/25)))
+    return max(MIN_LEARNING, min(0.5, 1.0 - math.log10((t+1)/15)))
 
 def state_to_bucket(state, STATE_BOUNDS, NUM_BUCKETS):
     bucket_indice = []

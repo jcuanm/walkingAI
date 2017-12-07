@@ -52,7 +52,7 @@ def train(num_episodes, bounds, num_states, q_values):
     alpha = .5
     exploration = 1
     gamma = 0.99  # the world is changing very little if at all
-    time_steps = 250
+    time_steps = 500
     times = []
 
     for i in range(num_episodes):
@@ -69,28 +69,29 @@ def train(num_episodes, bounds, num_states, q_values):
             q_values[initial_state + (action,)] += alpha*(reward + gamma*(max_Qvalue) - q_values[q_prime])
             initial_state = state
 
-            print_info(i,t,streaks,exploration,alpha)
+            #print_info(i,t,streaks,exploration,alpha)
 
             if done:
                 times.append(t)
 
                 # We consider an episode solved if it went 200 steps without falling
-                if (t < 200):
+                if (t < 500):
                     streaks = 0
                 else:
                     streaks += 1
                 break
 
-            elif t == 200:
+            elif t == 500:
                 times.append(t)
                 streaks += 1
                 break
 
-        exploration = max(.01, min(1, 1.0 - math.log10((t+1)/25)))
-        alpha = max(.5, min(0.5, 1.0 - math.log10((t+1)/25))) # received this formula from a TF at office hours
+        exploration = max(1e-6, min(1, 1.0 - math.log10((i+1)/25)))
+        alpha = max(.1, min(0.5, 1.0 - math.log10((i+1)/25))) # received this formula from a TF at office hours
 
-    plt.plot(times)
+    plt.plot(times, 'r')
     plt.show()
+
 def main():
     num_position_states = 1
     num_velocity_states = 1
