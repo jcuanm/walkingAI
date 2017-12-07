@@ -84,12 +84,7 @@ def train(num_episodes, bounds, num_states, q_values):
             # Q-learning update
             q_values[initial_state + (action,)] += alpha*(reward + (gamma * max_Qvalue) - q_values[q_prime])
             initial_state = state
-<<<<<<< HEAD
-
             #print_info(i,t,streaks,exploration,alpha)
-=======
-            print_info(i,t,streaks,exploration,alpha)
->>>>>>> 2263391e7971c13796541e0de3d5e11d5aaef3ec
 
             if done:
                 times.append(int(t))
