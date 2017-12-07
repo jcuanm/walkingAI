@@ -65,58 +65,47 @@ def train(num_episodes, bounds, num_states, q_values):
     alpha = .5
     exploration = 1
     gamma = 0.99  # the world is changing very little if at all
-    time_steps = 500
+    time_steps = 1000
     times = []
 
     for i in range(num_episodes):
         observation = env.reset()
         initial_state = get_state(observation, bounds, num_states)
-        
+        action = get_action(initial_state, exploration, q_values)
+
         for t in range(time_steps):
             #env.render()
-            action = get_action(initial_state, exploration, q_values)
             observation, reward, done, info = env.step(action)
             reward = get_reward(reward, observation,0)
             state = get_state(observation, bounds, num_states)
-            max_Qvalue = np.amax(q_values[state])
-            q_prime = initial_state + (action,)
+            action_prime = get_action(state,exploration,q_values)
             
-            # Q-learning update
-            q_values[initial_state + (action,)] += alpha*(reward + (gamma * max_Qvalue) - q_values[q_prime])
+            # SARSA update
+            q_values[initial_state + (action,)] += alpha*(reward + (gamma * q_values[state + (action_prime,)]) - q_values[initial_state + (action,)])
             initial_state = state
-<<<<<<< HEAD
-
-            #print_info(i,t,streaks,exploration,alpha)
-=======
+            action = action_prime
             print_info(i,t,streaks,exploration,alpha)
->>>>>>> 2263391e7971c13796541e0de3d5e11d5aaef3ec
 
             if done:
                 times.append(int(t))
                 # We consider an episode solved if it went 200 steps without falling
-                if (t < 500):
+                if (t < 200):
                     streaks = 0
                 else:
                     streaks += 1
                 break
 
-            elif t == 500:
+            elif t == 200:
                 times.append(t)
                 streaks += 1
                 break
 
-<<<<<<< HEAD
-        exploration = max(1e-6, min(1, 1.0 - math.log10((i+1)/25)))
-        alpha = max(.1, min(0.5, 1.0 - math.log10((i+1)/25))) # received this formula from a TF at office hours
-
-=======
         exploration = max(.01, min(1, 1.0 - math.log10((i+1)/25)))
         alpha = max(.5, min(0.5, 1.0 - math.log10((t+1)/25))) # received this formula from a TF at office hours
     plt.title("Inverted pendulum time steps per episode")
     plt.xlabel('Episode')
     plt.ylabel('Time (t)')
->>>>>>> 2263391e7971c13796541e0de3d5e11d5aaef3ec
-    plt.plot(times, 'r')
+    plt.plot(times, 'g')
     plt.show()
 
 def main():

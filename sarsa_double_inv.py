@@ -11,23 +11,6 @@ def init(name):
     return env, action_dim, observation_dim
 
 
-# version = 0: reward function proportional to the angles and position of the cart
-# version = 1: reward function proportional to only the angles
-# version = 2: default OpenAI reward (ie. 1)
-def get_reward(env_reward, observation, version):
-    x_position = observation[0]
-    sin1 = observation[1]
-    sin2 = observation[2]
-    cos1 = observation[3]
-    cos2 = observation[4]
- 
-    if (version == 0):
-        env_reward -= env_reward * (abs(sin1) + abs(sin2) + abs(cos1) + abs(cos2) + abs(x_position))  
-    elif (version == 1):
-        env_reward -= env_reward * (abs(sin1) + abs(sin2) + abs(cos1) + abs(cos2))  
-   
-    return env_reward
-
 NUM_EPISODES = 1000
 TIME_STEPS = 1000
 
@@ -40,7 +23,7 @@ def main():
     env, _, _ = init('InvertedDoublePendulum-v1')
 
     # Number of discrete states (bucket) per state dimension
-    NUM_BUCKETS = (1, 40, 40, 40, 40, 1, 40, 40, 1, 1, 1) # x, sin, sin, cos, cos, v, w, w, , ,
+    NUM_BUCKETS = (1, 10, 10, 10, 10, 1, 10, 10, 1, 1, 1) # x, sin, sin, cos, cos, v, w, w, , ,
     # Bounds for each discrete state
     STATE_BOUNDS = list(zip(env.observation_space.low, env.observation_space.high))
     STATE_BOUNDS = [(-1, 1) for _ in STATE_BOUNDS]
@@ -65,31 +48,24 @@ def main():
 
         # Reset the environment
         obv = env.reset()
-
-        # the initial state
         state_0 = state_to_bucket(obv, STATE_BOUNDS, NUM_BUCKETS)
+        action = select_action(env, state_0, explore_rate, q_table)
 
         for t in range(TIME_STEPS):
-            #if episode > 200:
-            env.render()
-
-            # Select an action
-            action = select_action(env, state_0, explore_rate, q_table)
-
+            #env.render()
             # Execute the action
-
             obv, reward, done, _ = env.step((action/3 + env.action_space.low)*0.5)
-            reward = get_reward(reward, obv, 2)
-
+            
             # Observe the result
             state = state_to_bucket(obv, STATE_BOUNDS, NUM_BUCKETS)
+            action_prime = select_action(env, state, explore_rate, q_table)
 
             # Update the Q based on the result
-            best_q = np.amax(q_table[state])
-            q_table[state_0 + (action,)] += learning_rate*(reward + discount_factor*best_q - q_table[state_0 + (action,)])
+            q_table[state_0 + (action,)] += learning_rate*(reward + discount_factor * q_table[state + (action_prime,)] - q_table[state_0 + (action,)])
 
             # Setting up for the next iteration
             state_0 = state
+            action = action_prime
 
             # Print data
             if (DEBUG_MODE):
@@ -114,7 +90,7 @@ def main():
         # Update parameters
         explore_rate = get_explore_rate(episode)
         learning_rate = get_learning_rate(episode)
-    plt.plot(times)
+    plt.plot(times, 'g')
     plt.title('Double Inverted Pendulum Episode Length Over Time')
     plt.xlabel('Episode Number')
     plt.ylabel('Timesteps')
@@ -133,7 +109,7 @@ def get_explore_rate(t):
     return max(MIN_EXPLORE_RATE, min(1.0, 1.0 - 20*math.log10((t+1)/200)))
 
 def get_learning_rate(t):
-    return max(MIN_LEARNING_RATE, min(0.8, 1.0 - 0.5*math.log10((t+1)/400)))
+    return max(MIN_LEARNING_RATE, min(0.8, 1.0 - 0.5*math.log10((t+1)/4000)))
 
 def state_to_bucket(state, STATE_BOUNDS, NUM_BUCKETS):
     bucket_indice = []
