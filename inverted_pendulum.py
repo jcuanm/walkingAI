@@ -105,17 +105,11 @@ def train(num_episodes, bounds, num_states, q_values):
                 streaks += 1
                 break
 
-<<<<<<< HEAD
-        exploration = max(1e-6, min(1, 1.0 - math.log10((i+1)/25)))
-        alpha = max(.1, min(0.5, 1.0 - math.log10((i+1)/25))) # received this formula from a TF at office hours
-
-=======
         exploration = max(.01, min(1, 1.0 - math.log10((i+1)/25)))
         alpha = max(.5, min(0.5, 1.0 - math.log10((t+1)/25))) # received this formula from a TF at office hours
     plt.title("Inverted pendulum time steps per episode")
     plt.xlabel('Episode')
     plt.ylabel('Time (t)')
->>>>>>> 2263391e7971c13796541e0de3d5e11d5aaef3ec
     plt.plot(times, 'r')
     plt.show()
 
