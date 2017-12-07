@@ -1,8 +1,52 @@
 import numpy as np
 import math
-from random import random
+import random
 from matplotlib import pyplot as plt
 import gym
+
+from mujoco_inverted_pendulum import MujocoInvPend
+
+
+class SarsaInvPend(MujocoInvPend):
+    ## Learning related constants
+    INIT_EXP = 1.0
+    MIN_EXPLORATION = 1e-10
+    EXP_COOLDOWN = 15
+
+    INIT_LEARN = 0.6
+    MIN_LEARNING = 1e-8
+    LEARN_COOLDOWN = 20
+
+    DISCOUNT = 0.99
+
+    def __init__(self, env):
+        MujocoInvPend.__init__(self, env)
+
+    def act(self, observation):
+        prev_state = self.state_to_bucket(observation)
+
+        # Select a random action
+        if random.random() < self.exploration_rate:
+            action = int(self.env.action_space.sample()) + 3
+        # Select the action with the highest q
+        else:
+            action = np.argmax(self.q_table[prev_state])
+        return action
+
+    def update(self, obs, reward):
+        self.state = self.state_to_bucket(obs)
+        next_action = self.act(obs)
+
+        # Update the Q based on the result
+        self.q_table[self.prev_state + (self.action,)] += self.learning_rate * (reward + self.DISCOUNT * self.q_table[self.state + (next_action,)] - self.q_table[self.prev_state + (self.action,)])
+
+        self.action = next_action
+        self.prev_state = self.state
+
+    def reward(self, obs):
+        reward = 1.0 - (4*abs(obs[1] + obs[3]))
+        #print(reward)
+        return reward
 
 env = gym.make('CartPole-v1')
 
@@ -20,7 +64,7 @@ def get_reward(env_reward, observation, version):
     return env_reward
 
 def get_action(state, exploration, q_values):
-    if random() >= exploration:
+    if random.random() >= exploration:
         action = np.argmax(q_values[state]) # Choose action w/ highest q
     else:
         action = env.action_space.sample() # Choose random action
@@ -84,7 +128,7 @@ def train(num_episodes, bounds, num_states, q_values):
             q_values[initial_state + (action,)] += alpha*(reward + (gamma * q_values[state + (action_prime,)]) - q_values[initial_state + (action,)])
             initial_state = state
             action = action_prime
-            print_info(i,t,streaks,exploration,alpha)
+            #print_info(i,t,streaks,exploration,alpha)
 
             if done:
                 times.append(int(t))
