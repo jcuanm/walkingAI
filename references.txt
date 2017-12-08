@@ -1,5 +1,0 @@
-https://medium.com/@tuzzer/cart-pole-balancing-with-q-learning-b54c6068d947
-
-https://openai.github.io/mujoco-py/build/html/reference.html#mjsim-basic-simulation
-
-https://github.com/openai/gym/blob/master/gym/envs/mujoco/inverted_double_pendulum.py
