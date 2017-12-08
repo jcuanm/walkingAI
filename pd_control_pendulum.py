@@ -1,6 +1,8 @@
-class PDController(object):
+from mujoco_inverted_pendulum import MujocoInvPend
+
+class PDController(MujocoInvPend):
     def __init__(self, env):
-        self.env = env
+        MujocoInvPend.__init__(self, env)
 
     def act(self, observation):
         # define coefficients
@@ -23,12 +25,11 @@ class PDController(object):
             action = self.env.action_space.high
         elif action < self.env.action_space.low:
             action = self.env.action_space.low
+        self.action = action
         return action
 
     def update(self, obs, reward):
         return
 
-    def get_explore_rate(self, episode):
-        return
-    def get_learning_rate(self, episode):
-        return
+    def step(self, action):
+        return self.env.step(action)

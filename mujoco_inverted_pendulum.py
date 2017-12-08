@@ -20,8 +20,12 @@ class MujocoInvPend(object):
     ## Discretization related constants
     # number of discrete states
     NUM_BUCKETS = (1, 40, 1, 20)  # x, theta, x', theta'
+
     # number of action states
-    NUM_ACTIONS = 7
+    OFFSET = 3
+    SCALE = 1
+    NUM_ACTIONS = 2*OFFSET+1
+    ACTION_CONSTRAINT = 0.1
 
     def __init__(self, env):
         self.env = env
@@ -47,7 +51,7 @@ class MujocoInvPend(object):
 
         # Select a random action
         if random.random() < self.exploration_rate:
-            self.action = int(self.env.action_space.sample()) + 3
+            self.action = int(self.env.action_space.sample()*self.SCALE) + self.OFFSET
         # Select the action with the highest q
         else:
             self.action = np.argmax(self.q_table[self.prev_state])
@@ -55,10 +59,11 @@ class MujocoInvPend(object):
 
     def step(self, action):
         self.action = action
-        return self.env.step((action - 3) * 0.1)
+        return self.env.step((action - self.OFFSET) * self.ACTION_CONSTRAINT)
 
-    def reward(self, obs):
-        return 1.0
+    def reward(self, obs, prev_obs):
+        reward = 1.0 - (4 * abs(obs[1] + obs[3]))
+        return reward
 
     def update(self, obs, reward):
         self.state = self.state_to_bucket(obs)

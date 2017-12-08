@@ -9,15 +9,20 @@ from mujoco_inverted_pendulum import MujocoInvPend
 
 class SarsaInvPend(MujocoInvPend):
     ## Learning related constants
-    INIT_EXP = 1.0
+    INIT_EXP = 0.8
     MIN_EXPLORATION = 1e-10
-    EXP_COOLDOWN = 15
+    EXP_COOLDOWN = 20
 
     INIT_LEARN = 0.6
-    MIN_LEARNING = 1e-8
-    LEARN_COOLDOWN = 20
+    MIN_LEARNING = 1e-9
+    LEARN_COOLDOWN = 30
 
     DISCOUNT = 0.99
+
+    OFFSET = 3
+    SCALE = 1
+    NUM_ACTIONS = 2 * OFFSET + 1
+    ACTION_CONSTRAINT = 0.1
 
     def __init__(self, env):
         MujocoInvPend.__init__(self, env)
@@ -27,7 +32,7 @@ class SarsaInvPend(MujocoInvPend):
 
         # Select a random action
         if random.random() < self.exploration_rate:
-            action = int(self.env.action_space.sample()) + 3
+            action = int(self.env.action_space.sample()*self.SCALE) + self.OFFSET
         # Select the action with the highest q
         else:
             action = np.argmax(self.q_table[prev_state])
@@ -43,10 +48,13 @@ class SarsaInvPend(MujocoInvPend):
         self.action = next_action
         self.prev_state = self.state
 
-    def reward(self, obs):
-        reward = 1.0 - (4*abs(obs[1] + obs[3]))
+    def reward(self, obs, prev_obs):
+        reward = 1.0 - 4*(abs(obs[1] + obs[3]))
         #print(reward)
         return reward
+
+
+# OLD CODE
 
 env = gym.make('CartPole-v1')
 
