@@ -48,6 +48,7 @@ def run_agent(agent_id, display):
             # act
             agent.act(ob)
 
+            # hold on to previous observation if needed
             prev_ob = ob
 
             # step
