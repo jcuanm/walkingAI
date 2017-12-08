@@ -101,13 +101,13 @@ def run_agent(agent_id, display=False, plot=True, init_expl=False, init_learn=Fa
         plt.xlabel('Episode Number')
         plt.ylabel('Timesteps')
 
-        plt.figure()
-        print(obs)
-        plt.plot(obs)
-        plt.title('Pendulum Angle Over Time')
-        plt.xlabel('Timesteps')
-        plt.ylabel('Angle')
-        plt.show()
+        if agent_id == 'PDController' or agent_id == 'InvPend' or agent_id == 'SarsaInvPend':
+            plt.figure()
+            plt.plot(obs)
+            plt.title('Pendulum Angle Over Time')
+            plt.xlabel('Timesteps')
+            plt.ylabel('Angle')
+            plt.show()
     # Close the env and write monitor result info to disk
     env.close()
     return times
