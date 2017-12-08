@@ -42,6 +42,7 @@ def run_agent(agent_id, display=False, plot=True, init_expl=False, init_learn=Fa
         agent = Walker(env)
         episode_count = 1000
         time_lim = 500
+        print('NOTE: Not fully implemented due to time constraints')
     else:
         print("Not a valid agent")
         return
