@@ -41,7 +41,7 @@ class SarsaDoubleInvPend(SarsaInvPend):
         state_bounds[7] = -10, 10
         return state_bounds
 
-    def reward(self, obs, prev_obs):
+    def reward(self, obs, prev_obs, default_reward):
         #reward = - 0.1*abs(obs[1] - obs[2])**2 - 0.1*abs(obs[6] - obs[7])**2
         reward = abs((1-abs(obs[1]))/(obs[6]-prev_obs[6])) + abs((1-abs(obs[2]))/(obs[7]-prev_obs[7]))
         #print(reward)

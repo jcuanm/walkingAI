@@ -2,7 +2,8 @@ import argparse
 import gym
 from matplotlib import pyplot as plt
 
-def run_agent(agent_id, display):
+
+def run_agent(agent_id, display=False):
     # select agent
     if agent_id == 'PDController':
         from pd_control_pendulum import PDController
@@ -23,18 +24,20 @@ def run_agent(agent_id, display):
         from double_inv_pend import DoubleInvPend
         env = gym.make('InvertedDoublePendulum-v1')
         agent = DoubleInvPend(env)
-        episode_count = 10000
+        episode_count = 20000
     elif agent_id == 'SarsaDoubleInvPend':
         from sarsa_double_inv import SarsaDoubleInvPend
         env = gym.make('InvertedDoublePendulum-v1')
         agent = SarsaDoubleInvPend(env)
-        episode_count = 10000
+        episode_count = 5000
     else:
         print("Not a valid agent")
         return
 
+    # defines the max length of an episode
     time_lim = 500
 
+    # keep track of length of episodes for plotting
     times = []
 
     for i in range(episode_count):
@@ -54,17 +57,20 @@ def run_agent(agent_id, display):
             # step
             ob, reward, done, _ = agent.step(agent.action)
 
-            reward = agent.reward(ob, prev_ob)
+            # reward function approximation
+            reward = agent.reward(ob, prev_ob, reward)
 
             # update
             agent.update(ob, reward)
             t += 1
             if done:
-                print("Episode %d finished after %f time steps" % (i, t))
+                print("Episode %d: %f time steps" % (i, t))
                 times.append(int(t))
                 break
             if len(times) < i:
                 times.append(time_lim)
+
+        # cool-down for exploration and learning
         agent.get_explore_rate(i)
         agent.get_learning_rate(i)
 
@@ -76,6 +82,7 @@ def run_agent(agent_id, display):
     plt.show()
     # Close the env and write monitor result info to disk
     env.close()
+    return times
 
 
 if __name__ == '__main__':

@@ -28,6 +28,7 @@ class SarsaInvPend(MujocoInvPend):
         MujocoInvPend.__init__(self, env)
 
     def act(self, observation):
+        """Follow epsilon greedy policy"""
         prev_state = self.state_to_bucket(observation)
 
         # Select a random action
@@ -39,6 +40,7 @@ class SarsaInvPend(MujocoInvPend):
         return action
 
     def update(self, obs, reward):
+        """Apply SARSA update function instead of Q learning and take action computed"""
         self.state = self.state_to_bucket(obs)
         next_action = self.act(obs)
 
@@ -48,7 +50,8 @@ class SarsaInvPend(MujocoInvPend):
         self.action = next_action
         self.prev_state = self.state
 
-    def reward(self, obs, prev_obs):
+    def reward(self, obs, prev_obs, default_reward):
+        """Reward function"""
         reward = 1.0 - 4*(abs(obs[1] + obs[3]))
         #print(reward)
         return reward
