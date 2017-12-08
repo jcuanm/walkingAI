@@ -55,6 +55,7 @@ def run_agent(agent_id, display=False, plot=True, init_expl=False, init_learn=Fa
     obs = np.array([])
 
     for i in range(episode_count):
+        cum_reward = 0
         init = env.reset()
         ob = init
         agent.prev_state = agent.state_to_bucket(ob)
@@ -76,6 +77,8 @@ def run_agent(agent_id, display=False, plot=True, init_expl=False, init_learn=Fa
             # step
             ob, reward, done, _ = agent.step(agent.action)
 
+            cum_reward += reward
+
             # reward function approximation
             reward = agent.reward(ob, prev_ob, reward)
 
@@ -83,11 +86,12 @@ def run_agent(agent_id, display=False, plot=True, init_expl=False, init_learn=Fa
             agent.update(ob, reward)
             t += 1
             if done:
-                print("Episode %d: %f time steps" % (i, t))
+                print("Episode %d: %.2f time steps; Reward: %.2f" % (i, t, cum_reward))
                 times.append(int(t))
                 break
-            if len(times) < i:
-                times.append(time_lim)
+        if len(times) < i:
+            print("Episode %d: %.2f time steps; Reward: %.2f" % (i, t, cum_reward))
+            times.append(time_lim)
 
         # cool-down for exploration and learning
         agent.get_explore_rate(i)
