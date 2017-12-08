@@ -2,4 +2,4 @@
 /mujoco-py
 .python-version
 .idea/
-/__pycache__
+__pycache__/
