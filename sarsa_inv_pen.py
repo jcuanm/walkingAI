@@ -4,7 +4,7 @@ import random
 from matplotlib import pyplot as plt
 import gym
 
-from mujoco_inverted_pendulum import MujocoInvPend
+from mujoco_inv_pend import MujocoInvPend
 
 
 class SarsaInvPend(MujocoInvPend):

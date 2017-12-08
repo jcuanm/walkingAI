@@ -12,7 +12,7 @@ def run_agent(agent_id, display=False, plot=True, init_expl=False, init_learn=Fa
         episode_count = 300
         time_lim = 500
     elif agent_id == 'InvPend':
-        from mujoco_inverted_pendulum import MujocoInvPend
+        from mujoco_inv_pend import MujocoInvPend
         env = gym.make('InvertedPendulum-v1')
         agent = MujocoInvPend(env)
         episode_count = 300
