@@ -132,21 +132,21 @@ def train(num_episodes, bounds, num_states, q_values):
 
             if done:
                 times.append(int(t))
-                # We consider an episode solved if it went 200 steps without falling
-                if (t < 200):
+                # We consider an episode solved if it went 500 steps without falling
+                if (t < 500):
                     streaks = 0
                 else:
                     streaks += 1
                 break
 
-            elif t == 200:
+            elif t == 500:
                 times.append(t)
                 streaks += 1
                 break
 
         exploration = max(.01, min(1, 1.0 - math.log10((i+1)/25)))
         alpha = max(.5, min(0.5, 1.0 - math.log10((t+1)/25))) # received this formula from a TF at office hours
-    plt.title("Inverted pendulum time steps per episode")
+    plt.title("SARSA Inverted pendulum time steps per episode")
     plt.xlabel('Episode')
     plt.ylabel('Time (t)')
     plt.plot(times, 'g')

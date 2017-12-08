@@ -11,12 +11,15 @@ def get_reward(env_reward, observation, version):
     x_hat = observation[1]
     angle = observation[2]
     angular_velocity = observation[3]
-    
+
+    # Make reward proportional to the angle and position of the pendulum    
     if (version == 0):
         env_reward -= env_reward * (abs(angle) + abs(x))  
+    # Make reward proprtional only to the angle
     elif (version == 1):
         env_reward -= env_reward * abs(angle)  
    
+    # if anything other than 0 or 1, then we use the default value of 1
     return env_reward
 
 def get_action(state, exploration, q_values):
@@ -76,7 +79,7 @@ def train(num_episodes, bounds, num_states, q_values):
             #env.render()
             action = get_action(initial_state, exploration, q_values)
             observation, reward, done, info = env.step(action)
-            reward = get_reward(reward, observation,0)
+            reward = get_reward(reward, observation,2)
             state = get_state(observation, bounds, num_states)
             max_Qvalue = np.amax(q_values[state])
             q_prime = initial_state + (action,)
@@ -88,7 +91,7 @@ def train(num_episodes, bounds, num_states, q_values):
 
             if done:
                 times.append(int(t))
-                # We consider an episode solved if it went 200 steps without falling
+                # We consider an episode solved if it went 500 steps without falling
                 if (t < 500):
                     streaks = 0
                 else:
