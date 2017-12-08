@@ -1,4 +1,4 @@
-from mujoco_inverted_pendulum import MujocoInvPend
+from mujoco_inv_pend import MujocoInvPend
 
 class PDController(MujocoInvPend):
     def __init__(self, env):
