@@ -5,12 +5,12 @@ import math
 
 class MujocoInvPend(object):
     ## Learning related constants
-    INIT_EXP = 1.0
+    INIT_EXP = 0.5
     MIN_EXPLORATION = 1e-10
     EXP_COOLDOWN = 15
 
     INIT_LEARN = 0.5
-    MIN_LEARNING = 1e-8
+    MIN_LEARNING = 1e-9
     LEARN_COOLDOWN = 20
 
     DISCOUNT = 0.99
@@ -64,7 +64,7 @@ class MujocoInvPend(object):
 
     def reward(self, obs, prev_obs, default_reward):
         """Reward function"""
-        reward = 1.0 - (4 * abs(obs[1] + obs[3]))
+        reward = 1.0 - 5*abs(obs[1] + obs[3])
         return reward
 
     def update(self, obs, reward):

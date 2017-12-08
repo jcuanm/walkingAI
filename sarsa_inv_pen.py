@@ -24,8 +24,8 @@ class SarsaInvPend(MujocoInvPend):
     NUM_ACTIONS = 2 * OFFSET + 1
     ACTION_CONSTRAINT = 0.1
 
-    def __init__(self, env):
-        MujocoInvPend.__init__(self, env)
+    def __init__(self, env, explore=INIT_EXP, learn=INIT_LEARN):
+        MujocoInvPend.__init__(self, env, explore, learn)
 
     def act(self, observation):
         """Follow epsilon greedy policy"""

@@ -1,6 +1,3 @@
-import numpy as np
-import random
-import math
 from mujoco_inverted_pendulum import MujocoInvPend
 
 
@@ -26,9 +23,8 @@ class DoubleInvPend(MujocoInvPend):
     NUM_ACTIONS = 2 * OFFSET + 1
     ACTION_CONSTRAINT = 0.05
 
-
-    def __init__(self, env):
-        MujocoInvPend.__init__(self, env)
+    def __init__(self, env, explore=INIT_EXP, learn = INIT_LEARN):
+        MujocoInvPend.__init__(self, env, explore, learn)
 
     def discretize(self):
         # Bounds for each discrete state

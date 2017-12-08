@@ -10,32 +10,40 @@ def run_agent(agent_id, display=False):
         env = gym.make('InvertedPendulum-v1')
         agent = PDController(env)
         episode_count = 300
+        time_lim = 500
     elif agent_id == 'InvPend':
         from mujoco_inverted_pendulum import MujocoInvPend
         env = gym.make('InvertedPendulum-v1')
         agent = MujocoInvPend(env)
         episode_count = 300
+        time_lim = 950
     elif agent_id == 'SarsaInvPend':
         from sarsa_inv_pen import SarsaInvPend
         env = gym.make('InvertedPendulum-v1')
         agent = SarsaInvPend(env)
         episode_count = 300
+        time_lim = 950
     elif agent_id == 'DoubleInvPend':
         from double_inv_pend import DoubleInvPend
         env = gym.make('InvertedDoublePendulum-v1')
         agent = DoubleInvPend(env)
         episode_count = 20000
+        time_lim = 500
     elif agent_id == 'SarsaDoubleInvPend':
         from sarsa_double_inv import SarsaDoubleInvPend
         env = gym.make('InvertedDoublePendulum-v1')
         agent = SarsaDoubleInvPend(env)
-        episode_count = 5000
+        episode_count = 20000
+        time_lim = 500
+    elif agent_id == 'Walker':
+        from walker import Walker
+        env = gym.make('Walker2d-v1')
+        agent = Walker(env)
+        episode_count = 1000
+        time_lim = 500
     else:
         print("Not a valid agent")
         return
-
-    # defines the max length of an episode
-    time_lim = 500
 
     # keep track of length of episodes for plotting
     times = []
