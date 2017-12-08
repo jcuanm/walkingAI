@@ -1,5 +1,6 @@
 import argparse
 import gym
+import numpy as np
 from matplotlib import pyplot as plt
 
 
@@ -9,8 +10,8 @@ def run_agent(agent_id, display=False, plot=True, init_expl=False, init_learn=Fa
         from pd_control_pendulum import PDController
         env = gym.make('InvertedPendulum-v1')
         agent = PDController(env)
-        episode_count = 300
-        time_lim = 500
+        episode_count = 10
+        time_lim = 950
     elif agent_id == 'InvPend':
         from mujoco_inv_pend import MujocoInvPend
         env = gym.make('InvertedPendulum-v1')
@@ -51,6 +52,7 @@ def run_agent(agent_id, display=False, plot=True, init_expl=False, init_learn=Fa
 
     # keep track of length of episodes for plotting
     times = []
+    obs = np.array([])
 
     for i in range(episode_count):
         init = env.reset()
@@ -58,8 +60,13 @@ def run_agent(agent_id, display=False, plot=True, init_expl=False, init_learn=Fa
         agent.prev_state = agent.state_to_bucket(ob)
         t = 0
         while t < time_lim:
+            # only display when told to
             if display:
                 env.render()
+            # keep track of observations of final episode
+            if i == episode_count - 1:
+                obs = np.append(obs, ob[1])
+
             # act
             agent.act(ob)
 
@@ -88,10 +95,18 @@ def run_agent(agent_id, display=False, plot=True, init_expl=False, init_learn=Fa
 
     if plot:
         # plot distribution of episode times
+        plt.figure()
         plt.plot(times)
         plt.title('Episode Length Over Time')
         plt.xlabel('Episode Number')
         plt.ylabel('Timesteps')
+
+        plt.figure()
+        print(obs)
+        plt.plot(obs)
+        plt.title('Pendulum Angle Over Time')
+        plt.xlabel('Timesteps')
+        plt.ylabel('Angle')
         plt.show()
     # Close the env and write monitor result info to disk
     env.close()
