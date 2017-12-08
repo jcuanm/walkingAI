@@ -3,7 +3,7 @@ import gym
 from matplotlib import pyplot as plt
 
 
-def run_agent(agent_id, display=False):
+def run_agent(agent_id, display=False, plot=True, init_expl=False, init_learn=False):
     # select agent
     if agent_id == 'PDController':
         from pd_control_pendulum import PDController
@@ -45,6 +45,10 @@ def run_agent(agent_id, display=False):
         print("Not a valid agent")
         return
 
+    if init_expl and init_learn:
+        agent.exploration_rate = init_expl
+        agent.learning_rate = init_learn
+
     # keep track of length of episodes for plotting
     times = []
 
@@ -82,12 +86,13 @@ def run_agent(agent_id, display=False):
         agent.get_explore_rate(i)
         agent.get_learning_rate(i)
 
-    # plot distribution of episode times
-    plt.plot(times)
-    plt.title('Episode Length Over Time')
-    plt.xlabel('Episode Number')
-    plt.ylabel('Timesteps')
-    plt.show()
+    if plot:
+        # plot distribution of episode times
+        plt.plot(times)
+        plt.title('Episode Length Over Time')
+        plt.xlabel('Episode Number')
+        plt.ylabel('Timesteps')
+        plt.show()
     # Close the env and write monitor result info to disk
     env.close()
     return times
@@ -97,8 +102,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=None)
     parser.add_argument('--agent_id', nargs='?', default='PDController', help='Select the agent to run')
     parser.add_argument('-display', action='store_true', help='Toggle rendering')
+    parser.add_argument('-no_plot', action='store_false', help='Toggle plot')
     args = parser.parse_args()
 
-    run_agent(args.agent_id, args.display)
+    run_agent(args.agent_id, args.display, args.no_plot)
 
 

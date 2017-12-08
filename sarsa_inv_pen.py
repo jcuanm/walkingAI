@@ -11,11 +11,11 @@ class SarsaInvPend(MujocoInvPend):
     ## Learning related constants
     INIT_EXP = 0.8
     MIN_EXPLORATION = 1e-10
-    EXP_COOLDOWN = 20
+    EXP_COOLDOWN = 15
 
     INIT_LEARN = 0.6
     MIN_LEARNING = 1e-9
-    LEARN_COOLDOWN = 30
+    LEARN_COOLDOWN = 20
 
     DISCOUNT = 0.99
 
@@ -52,7 +52,7 @@ class SarsaInvPend(MujocoInvPend):
 
     def reward(self, obs, prev_obs, default_reward):
         """Reward function"""
-        reward = 1.0 - 4*(abs(obs[1] + obs[3]))
+        reward = 1.0 - 3*(abs(obs[1] + obs[3])) - abs(obs[0] + obs[2])
         #print(reward)
         return reward
 
